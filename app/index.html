@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Coast — GTA-style Cover Maker</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="brand"><span class="brand-mark">NC</span><span class="brand-name">NEON COAST</span><span class="brand-sub">cover studio</span></div>
+    <div class="top-actions">
+      <button id="undoBtn" class="ghost" title="Undo">↩ Undo</button>
+      <button id="redoBtn" class="ghost" title="Redo">↪ Redo</button>
+      <button id="randomBtn" class="ghost" title="Shuffle layout, grade and photos">🎲 Surprise me</button>
+      <button id="exportBtn" class="primary">⬇ Export PNG</button>
+    </div>
+  </header>
+
+  <main id="workspace">
+    <section id="stageWrap">
+      <div id="stageBar">
+        <span id="sizeLabel">1080 × 1080</span>
+        <span id="hint">Click a panel to select it · drag to move the photo · scroll to zoom</span>
+      </div>
+      <div id="stage"><canvas id="preview" width="900" height="900"></canvas></div>
+      <div id="thumbRow"></div>
+    </section>
+
+    <aside id="panel">
+      <div class="group">
+        <h2>1 · Photos</h2>
+        <div class="row">
+          <label class="fileBtn">＋ Add photos<input id="fileInput" type="file" accept="image/*" multiple hidden></label>
+          <button id="sampleBtn" class="ghost">Load samples</button>
+        </div>
+        <div id="photoStrip"></div>
+        <div class="row">
+          <button id="fillAllBtn" class="ghost wide">Fill every panel with selected photo</button>
+        </div>
+        <p class="note">Photos stay on your machine — nothing is uploaded.</p>
+      </div>
+
+      <div class="group">
+        <h2>2 · Layout</h2>
+        <div id="layoutRow" class="chips"></div>
+        <h2>3 · Size</h2>
+        <div id="sizeRow" class="chips"></div>
+      </div>
+
+      <div class="group">
+        <h2>4 · Colour grade</h2>
+        <div id="gradeRow" class="swatches"></div>
+        <label class="sliderRow">Grade strength <input id="gradeAmt" type="range" min="0" max="100" value="80"><span id="gradeAmtVal">80%</span></label>
+        <label class="sliderRow">Grain <input id="grainAmt" type="range" min="0" max="100" value="35"><span id="grainAmtVal">35%</span></label>
+        <label class="checkRow"><input id="halftoneChk" type="checkbox" checked> Halftone dots on title band</label>
+        <label class="checkRow"><input id="vignetteChk" type="checkbox" checked> Vignette</label>
+      </div>
+
+      <div class="group">
+        <h2>5 · Lettering</h2>
+        <label class="field">Title<input id="titleInput" type="text" value="NEON SHORE" maxlength="24"></label>
+        <label class="field">Subtitle<input id="subtitleInput" type="text" value="Vice City nights" maxlength="40"></label>
+        <label class="field">Badge<input id="badgeInput" type="text" value="★ VICE CITY ★" maxlength="30"></label>
+        <label class="sliderRow">Heat <input id="starsInput" type="range" min="1" max="5" value="5"><span id="starsVal">★★★★★</span></label>
+        <div class="row">
+          <button id="titleUpBtn" class="ghost">Title ↑</button>
+          <button id="titleDownBtn" class="ghost">Title ↓</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Selected panel</h2>
+        <div id="panelInfo">No panel selected — click one on the cover.</div>
+        <label class="sliderRow">Zoom <input id="zoomInput" type="range" min="100" max="300" value="100"><span id="zoomVal">100%</span></label>
+        <div class="row">
+          <button id="swapBtn" class="ghost wide">Swap photo in this panel</button>
+        </div>
+        <div class="row">
+          <button id="resetPanelBtn" class="ghost">Reset panel</button>
+          <button id="resetAllBtn" class="ghost">Reset everything</button>
+        </div>
+      </div>
+
+      <p class="fineprint">Original art made with your photos. Not affiliated with Rockstar Games. Fonts: Anton &amp; Pacifico (SIL OFL).</p>
+    </aside>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

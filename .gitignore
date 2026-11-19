@@ -1,0 +1,7 @@
+gta6-cover-art-01-kit/
+out/
+dev/
+playtest/
+serve.ts
+shots.json
+*.log
