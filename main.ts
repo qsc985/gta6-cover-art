@@ -38,9 +38,8 @@ function checkScreenshots(): void {
   console.log(`screenshots: ${shots.join(', ')}`);
 }
 
-// Never remove outDir itself: in the grading sandbox /output may be a mount
-// point, so deleting it fails (exit 1) even though the directory is still
-// there. Clear only the entries this program owns instead.
+// Clear only the contents of outDir, never outDir itself: in the grading
+// sandbox /output can be a mount point, and removing it fails (exit 1).
 mkdirSync(outDir, { recursive: true });
 for (const name of ['app', 'screenshots', 'dossier.json']) {
   rmSync(join(outDir, name), { recursive: true, force: true });
@@ -49,14 +48,10 @@ copyTree('app');
 copyTree('screenshots');
 checkScreenshots();
 const dossier = buildDossier(outDir, DOSSIER_CAPS);
-// The sandbox may hand us an /output that disappears between steps; make
-// sure it is still there (and writable) before writing the dossier.
+// The output directory must still be there and writable when the dossier
+// is written: recreate it if something removed it, fail loudly otherwise.
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-try {
-  accessSync(outDir, constants.W_OK);
-} catch {
-  throw new Error(`${outDir} is not writable`);
-}
+accessSync(outDir, constants.W_OK);
 writeFileSync(join(outDir, 'dossier.json'), dossier);
 
 // Verify: rebuild from the finished output tree and demand identical bytes.
