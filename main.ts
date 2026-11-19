@@ -4,7 +4,7 @@
 // dossier.json with buildDossier from vendor/makefun-app.ts, and then verifies
 // the dossier by rebuilding it from the output tree and comparing bytes, so a
 // stale or partial copy can never be handed in silently.
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { accessSync, constants, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-app.ts';
@@ -38,12 +38,25 @@ function checkScreenshots(): void {
   console.log(`screenshots: ${shots.join(', ')}`);
 }
 
-rmSync(outDir, { recursive: true, force: true });
+// Never remove outDir itself: in the grading sandbox /output may be a mount
+// point, so deleting it fails (exit 1) even though the directory is still
+// there. Clear only the entries this program owns instead.
 mkdirSync(outDir, { recursive: true });
+for (const name of ['app', 'screenshots', 'dossier.json']) {
+  rmSync(join(outDir, name), { recursive: true, force: true });
+}
 copyTree('app');
 copyTree('screenshots');
 checkScreenshots();
 const dossier = buildDossier(outDir, DOSSIER_CAPS);
+// The sandbox may hand us an /output that disappears between steps; make
+// sure it is still there (and writable) before writing the dossier.
+if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+try {
+  accessSync(outDir, constants.W_OK);
+} catch {
+  throw new Error(`${outDir} is not writable`);
+}
 writeFileSync(join(outDir, 'dossier.json'), dossier);
 
 // Verify: rebuild from the finished output tree and demand identical bytes.
